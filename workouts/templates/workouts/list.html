@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>筋トレ記録</title>
+</head>
+<body>
+
+    <h1>筋トレ記録</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">記録を追加</button>
+    </form>
+
+    <hr>
+
+    <h2>トレーニング履歴</h2>
+
+    <ul>
+        {% for workout in workouts %}
+            <li>
+                {{ workout.workout_date }}
+                {{ workout.exercise }}
+                {{ workout.weight }} kg
+                {{ workout.reps }}回
+                {{ workout.sets }}セット
+
+                {% if workout.memo %}
+                    <br>
+                    メモ：{{ workout.memo }}
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>まだ記録がありません</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
