@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>種目を追加</title>
+</head>
+<body>
+
+    <h1>種目を追加</h1>
+
+    <p>
+        {{ workout.workout_date }} のトレーニング
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">種目を追加</button>
+    </form>
+
+    <a href="{% url 'workout_list' %}">
+        トレーニング一覧に戻る
+    </a>
+
+</body>
+</html>

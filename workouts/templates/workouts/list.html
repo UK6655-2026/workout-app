@@ -8,12 +8,14 @@
 
     <h1>筋トレ記録</h1>
 
+    <h2>トレーニングを追加</h2>
+
     <form method="POST">
         {% csrf_token %}
 
-        {{ form.as_p }}
+        {{ workout_form.as_p }}
 
-        <button type="submit">記録を追加</button>
+        <button type="submit">トレーニングを追加</button>
     </form>
 
     <hr>
@@ -23,17 +25,34 @@
     <ul>
         {% for workout in workouts %}
             <li>
-                {{ workout.workout_date }}
-                {{ workout.exercise }}
-                {{ workout.weight }} kg
-                {{ workout.reps }}回
-                {{ workout.sets }}セット
+                <strong>{{ workout.workout_date }}</strong>
 
                 {% if workout.memo %}
                     <br>
                     メモ：{{ workout.memo }}
                 {% endif %}
+
+                <br>
+
+                <a href="{% url 'exercise_create' workout.id %}">
+                    種目を追加
+                </a>
+
+                {% for exercise in workout.exercises.all %}
+                    <div>
+                        <strong>種目：{{ exercise.name }}</strong>
+
+                        <ul>
+                            {% for set in exercise.sets.all %}
+                                <li>
+                                    {{ set.weight }} kg x {{ set.reps }}回
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
             </li>
+
         {% empty %}
             <li>まだ記録がありません</li>
         {% endfor %}
