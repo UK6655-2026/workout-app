@@ -1,62 +1,123 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <title>筋トレ記録</title>
 </head>
+
 <body>
 
     <h1>筋トレ記録</h1>
 
-    <h2>トレーニングを追加</h2>
+    <p>
+        ログイン中：{{ request.user.username }}
+    </p>
+
+    <a href="{% url 'logout' %}">
+        ログアウト
+    </a>
+
+    <hr>
+
+    <h2>トレーニングを記録</h2>
 
     <form method="POST">
+
         {% csrf_token %}
 
         {{ workout_form.as_p }}
 
-        <button type="submit">トレーニングを追加</button>
+        <button type="submit">
+            記録を追加
+        </button>
+
     </form>
 
     <hr>
 
     <h2>トレーニング履歴</h2>
 
-    <ul>
-        {% for workout in workouts %}
-            <li>
-                <strong>{{ workout.workout_date }}</strong>
+    {% for workout in workouts %}
 
-                {% if workout.memo %}
-                    <br>
+        <div>
+
+            <h3>
+                {{ workout.workout_date }}
+            </h3>
+
+            {% if workout.memo %}
+                <p>
                     メモ：{{ workout.memo }}
-                {% endif %}
+                </p>
+            {% endif %}
 
-                <br>
+            <h4>種目</h4>
 
-                <a href="{% url 'exercise_create' workout.id %}">
-                    種目を追加
-                </a>
+            <ul>
 
                 {% for exercise in workout.exercises.all %}
-                    <div>
-                        <strong>種目：{{ exercise.name }}</strong>
+
+                    <li>
+
+                        <strong>
+                            {{ exercise.name }}
+                        </strong>
+
+                        <br>
+
+                        <a href="{% url 'set_create' exercise.id %}">
+                            セットを追加
+                        </a>
 
                         <ul>
-                            {% for set in exercise.sets.all %}
-                                <li>
-                                    {{ set.weight }} kg x {{ set.reps }}回
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endfor %}
-            </li>
 
-        {% empty %}
-            <li>まだ記録がありません</li>
-        {% endfor %}
-    </ul>
+                            {% for workout_set in exercise.sets.all %}
+
+                                <li>
+                                    {{ workout_set.weight }} kg
+                                    ×
+                                    {{ workout_set.reps }}回
+                                </li>
+
+                            {% empty %}
+
+                                <li>
+                                    まだセットがありません
+                                </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </li>
+
+                {% empty %}
+
+                    <li>
+                        まだ種目がありません
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+            <a href="{% url 'exercise_create' workout.id %}">
+                種目を追加
+            </a>
+
+        </div>
+
+        <hr>
+
+    {% empty %}
+
+        <p>
+            まだトレーニング記録がありません。
+        </p>
+
+    {% endfor %}
 
 </body>
+
 </html>
