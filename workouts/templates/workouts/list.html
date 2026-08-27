@@ -46,6 +46,14 @@
                 {{ workout.workout_date }}
             </h3>
 
+            <a href="{% url 'workout_edit' workout.id %}">
+                編集
+            </a>
+
+            <a href="{% url 'workout_delete' workout.id %}">
+                トレーニングを削除
+            </a>
+
             {% if workout.memo %}
                 <p>
                     メモ：{{ workout.memo }}
@@ -65,9 +73,15 @@
                         </strong>
 
                         <br>
-
+                        
                         <a href="{% url 'set_create' exercise.id %}">
                             セットを追加
+                        </a>
+
+                        <br>
+
+                        <a href="{% url 'exercise_delete' exercise.id %}">
+                            種目を削除
                         </a>
 
                         <ul>
@@ -76,8 +90,18 @@
 
                                 <li>
                                     {{ workout_set.weight }} kg
-                                    ×
+                                    x
                                     {{ workout_set.reps }}回
+
+                                    <a href="{% url 'set_edit' workout_set.id %}">
+                                        セットを編集
+                                    </a>
+
+                                    <br>
+
+                                    <a href="{% url 'set_delete' workout_set.id %}">
+                                        セットを削除
+                                    </a>
                                 </li>
 
                             {% empty %}

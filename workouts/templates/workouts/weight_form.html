@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>体重記録</title>
+</head>
+
+<body>
+
+    <h1>体重記録</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            保存する
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'home' %}">
+        ホームに戻る
+    </a>
+
+</body>
+
+</html>

@@ -3,16 +3,35 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>セットを追加</title>
+    <title>
+        {% if workout_set %}
+            セットを編集
+        {% else %}
+            セットを追加
+        {% endif %}
+    </title>
 </head>
 
 <body>
 
-    <h1>セットを追加</h1>
+    {% if workout_set %}
 
-    <p>
-        種目：{{ exercise.name }}
-    </p>
+        <h1>セットを編集</h1>
+
+        <p>
+            種目：{{ workout_set.exercise.name }}
+        </p>
+
+    {% else %}
+
+        <h1>セットを追加</h1>
+
+        <p>
+            種目：{{ exercise.name }}
+        </p>
+
+    {% endif %}
+
 
     <form method="POST">
 
@@ -21,10 +40,19 @@
         {{ form.as_p }}
 
         <button type="submit">
-            セットを追加
+
+            {% if workout_set %}
+                保存する
+            {% else %}
+                セットを追加
+            {% endif %}
+
         </button>
 
     </form>
+
+
+    <br>
 
     <a href="{% url 'workout_list' %}">
         トレーニング一覧に戻る

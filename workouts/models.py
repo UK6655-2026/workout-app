@@ -44,3 +44,33 @@ class WorkoutSet(models.Model):
     def __str__(self):
         return f"{self.weight}kg × {self.reps}回"
 
+class Goal(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="goals"
+    )
+    future_goal = models.TextField()
+    one_month_goal = models.TextField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.future_goal
+    
+class WeightRecord(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="weight_records"
+    )
+    date = models.DateField()
+    weight = models.DecimalField(
+        max_digits=5,
+        decimal_places=2
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.date} - {self.weight}kg"

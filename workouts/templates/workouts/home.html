@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ホーム</title>
+</head>
+
+<body>
+
+    <h1>筋トレ管理アプリ</h1>
+
+    <p>
+        ようこそ、{{ request.user.username }}さん
+    </p>
+
+    <hr>
+
+    <h2>ホーム</h2>
+
+    <ul>
+
+        <li>
+            <a href="{% url 'workout_list' %}">
+                トレーニングを記録する
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'goal_create' %}">
+                目標を設定する
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'weight_create' %}">
+                体重を記録する
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                統計を見る
+            </a>
+        </li>
+
+    </ul>
+
+    <hr>
+
+    <h2>現在の目標</h2>
+
+    {% if goal %}
+
+        <h3>今後の目標</h3>
+
+        <p>
+            {{ goal.future_goal }}
+        </p>
+
+        <h3>1ヶ月後の目標</h3>
+
+        <p>
+            {{ goal.one_month_goal }}
+        </p>
+
+    {% else %}
+
+        <p>
+            まだ目標が設定されていません。
+        </p>
+
+    {% endif %}
+
+    <a href="{% url 'goal_create' %}">
+        目標を編集する
+    </a>
+
+    <p>
+        今日もトレーニングを頑張りましょう！
+    </p>
+
+    <a href="{% url 'logout' %}">
+        ログアウト
+    </a>
+
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>トレーニング削除</title>
+</head>
+
+<body>
+
+    <h1>トレーニングを削除</h1>
+
+    <p>
+        {{ workout.workout_date }} のトレーニングを削除しますか？
+    </p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <button type="submit">
+            削除する
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'workout_list' %}">
+        キャンセル
+    </a>
+
+</body>
+
+</html>

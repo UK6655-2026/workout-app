@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>トレーニング編集</title>
+</head>
+
+<body>
+
+    <h1>トレーニング編集</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            保存する
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'workout_list' %}">
+        戻る
+    </a>
+
+</body>
+
+</html>
