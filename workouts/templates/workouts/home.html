@@ -1,88 +1,166 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
     <title>ホーム</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
 
-    <h1>筋トレ管理アプリ</h1>
+    <div class="container">
 
-    <p>
-        ようこそ、{{ request.user.username }}さん
-    </p>
+        <header class="header">
 
-    <hr>
+            <h1>筋トレ管理アプリ</h1>
 
-    <h2>ホーム</h2>
+            <p>
+                ようこそ、{{ request.user.username }}さん
+            </p>
 
-    <ul>
+        </header>
 
-        <li>
-            <a href="{% url 'workout_list' %}">
-                トレーニングを記録する
+        <main>
+
+            <section class="summary">
+
+                <div class="card">
+
+                    <h2>🎯 現在の目標</h2>
+
+                    {% if goal %}
+
+                        <h3>今後の目標</h3>
+
+                        <p>
+                            {{ goal.future_goal }}
+                        </p>
+
+                        <h3>1ヶ月後の目標</h3>
+
+                        <p>
+                            {{ goal.one_month_goal }}
+                        </p>
+
+                        <a class="text-link" href="{% url 'goal_create' %}">
+                            目標を編集する
+                        </a>
+
+                    {% else %}
+
+                        <p>
+                            まだ目標が設定されていません。
+                        </p>
+
+                        <a class="button secondary-button" href="{% url 'goal_create' %}">
+                            目標を設定する
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="card">
+
+                    <h2>⚖️ 現在の体重</h2>
+
+                    {% if latest_weight %}
+
+                        <p class="large-number">
+                            {{ latest_weight.weight }} kg
+                        </p>
+
+                        <p>
+                            記録日：{{ latest_weight.date }}
+                        </p>
+
+                    {% else %}
+
+                        <p>
+                            まだ体重が記録されていません。
+                        </p>
+
+                    {% endif %}
+
+                    <a class="button secondary-button" href="{% url 'weight_create' %}">
+                        体重を記録する
+                    </a>
+
+                    <a class="text-link" href="{% url 'weight_list' %}">
+                        体重履歴を見る
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <section>
+
+                <h2 class="section-title">メニュー</h2>
+
+                <div class="menu-grid">
+
+                    <a class="menu-card main-menu" href="{% url 'workout_list' %}">
+                        <span class="menu-icon">🏋️</span>
+                        <strong>トレーニング</strong>
+                        <span>今日の記録を追加</span>
+                    </a>
+
+                    <a class="menu-card" href="{% url 'goal_create' %}">
+                        <span class="menu-icon">🎯</span>
+                        <strong>目標</strong>
+                        <span>目標を設定・編集</span>
+                    </a>
+
+                    <a class="menu-card" href="{% url 'weight_create' %}">
+                        <span class="menu-icon">⚖️</span>
+                        <strong>体重</strong>
+                        <span>体重を記録</span>
+                    </a>
+
+                    <a class="menu-card" href="{% url 'workout_calendar' %}">
+                        <span class="menu-icon">📅</span>
+                        <strong>カレンダー</strong>
+                        <span>トレーニング日を確認</span>
+                    </a>
+
+                    <a class="menu-card" href="{% url 'statistics' %}">
+                        <span class="menu-icon">📊</span>
+                        <strong>統計</strong>
+                        <span>成長を確認</span>
+                    </a>
+
+                </div>
+
+            </section>
+
+
+            <section class="motivation">
+
+                <p>
+                    今日もトレーニングを頑張りましょう！💪
+                </p>
+
+            </section>
+
+        </main>
+
+
+        <footer>
+
+            <a class="logout-link" href="{% url 'logout' %}">
+                ログアウト
             </a>
-        </li>
 
-        <li>
-            <a href="{% url 'goal_create' %}">
-                目標を設定する
-            </a>
-        </li>
+        </footer>
 
-        <li>
-            <a href="{% url 'weight_create' %}">
-                体重を記録する
-            </a>
-        </li>
-
-        <li>
-            <a href="#">
-                統計を見る
-            </a>
-        </li>
-
-    </ul>
-
-    <hr>
-
-    <h2>現在の目標</h2>
-
-    {% if goal %}
-
-        <h3>今後の目標</h3>
-
-        <p>
-            {{ goal.future_goal }}
-        </p>
-
-        <h3>1ヶ月後の目標</h3>
-
-        <p>
-            {{ goal.one_month_goal }}
-        </p>
-
-    {% else %}
-
-        <p>
-            まだ目標が設定されていません。
-        </p>
-
-    {% endif %}
-
-    <a href="{% url 'goal_create' %}">
-        目標を編集する
-    </a>
-
-    <p>
-        今日もトレーニングを頑張りましょう！
-    </p>
-
-    <a href="{% url 'logout' %}">
-        ログアウト
-    </a>
+    </div>
 
 </body>
 

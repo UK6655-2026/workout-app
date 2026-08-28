@@ -1,146 +1,219 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>筋トレ記録</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
 
-    <h1>筋トレ記録</h1>
+    <div class="container">
 
-    <p>
-        ログイン中：{{ request.user.username }}
-    </p>
+        <header class="header">
 
-    <a href="{% url 'logout' %}">
-        ログアウト
-    </a>
+            <h1>🏋️ 筋トレ記録</h1>
 
-    <hr>
+            <p>
+                ログイン中：{{ request.user.username }}
+            </p>
 
-    <h2>トレーニングを記録</h2>
+        </header>
 
-    <form method="POST">
 
-        {% csrf_token %}
+        <main>
 
-        {{ workout_form.as_p }}
+            <!-- トレーニング記録 -->
 
-        <button type="submit">
-            記録を追加
-        </button>
+            <section class="card">
 
-    </form>
+                <h2>トレーニングを記録</h2>
 
-    <hr>
+                <form method="POST">
 
-    <h2>トレーニング履歴</h2>
+                    {% csrf_token %}
 
-    {% for workout in workouts %}
+                    {{ workout_form.as_p }}
 
-        <div>
+                    <button type="submit" class="primary-button">
+                        記録を追加
+                    </button>
 
-            <h3>
-                {{ workout.workout_date }}
-            </h3>
+                </form>
 
-            <a href="{% url 'workout_edit' workout.id %}">
-                編集
-            </a>
+            </section>
 
-            <a href="{% url 'workout_delete' workout.id %}">
-                トレーニングを削除
-            </a>
 
-            {% if workout.memo %}
-                <p>
-                    メモ：{{ workout.memo }}
-                </p>
-            {% endif %}
+            <!-- トレーニング履歴 -->
 
-            <h4>種目</h4>
+            <section>
 
-            <ul>
+                <h2 class="section-title">
+                    トレーニング履歴
+                </h2>
 
-                {% for exercise in workout.exercises.all %}
 
-                    <li>
+                {% for workout in workouts %}
 
-                        <strong>
-                            {{ exercise.name }}
-                        </strong>
+                    <div class="workout-card">
 
-                        <br>
-                        
-                        <a href="{% url 'set_create' exercise.id %}">
-                            セットを追加
-                        </a>
+                        <div class="workout-header">
 
-                        <br>
+                            <h3>
+                                {{ workout.workout_date }}
+                            </h3>
 
-                        <a href="{% url 'exercise_delete' exercise.id %}">
-                            種目を削除
-                        </a>
+                            <div>
 
-                        <ul>
+                                <a class="small-button"
+                                   href="{% url 'workout_edit' workout.id %}">
+                                    編集
+                                </a>
 
-                            {% for workout_set in exercise.sets.all %}
+                                <a class="small-button delete-button"
+                                   href="{% url 'workout_delete' workout.id %}">
+                                    削除
+                                </a>
 
-                                <li>
-                                    {{ workout_set.weight }} kg
-                                    x
-                                    {{ workout_set.reps }}回
+                            </div>
 
-                                    <a href="{% url 'set_edit' workout_set.id %}">
-                                        セットを編集
-                                    </a>
+                        </div>
 
-                                    <br>
 
-                                    <a href="{% url 'set_delete' workout_set.id %}">
-                                        セットを削除
-                                    </a>
-                                </li>
+                        {% if workout.memo %}
+
+                            <p class="memo">
+                                📝 {{ workout.memo }}
+                            </p>
+
+                        {% endif %}
+
+
+                        <div class="exercise-section">
+
+                            <h4>種目</h4>
+
+
+                            {% for exercise in workout.exercises.all %}
+
+                                <div class="exercise-card">
+
+                                    <div class="exercise-header">
+
+                                        <strong>
+                                            {{ exercise.name }}
+                                        </strong>
+
+                                        <div>
+
+                                            <a class="small-button"
+                                               href="{% url 'set_create' exercise.id %}">
+                                                セット追加
+                                            </a>
+
+                                            <a class="small-button delete-button"
+                                               href="{% url 'exercise_delete' exercise.id %}">
+                                                種目削除
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="set-list">
+
+                                        {% for workout_set in exercise.sets.all %}
+
+                                            <div class="set-row">
+
+                                                <span>
+                                                    {{ workout_set.weight }} kg
+                                                    ×
+                                                    {{ workout_set.reps }}回
+                                                </span>
+
+                                                <span>
+
+                                                    <a href="{% url 'set_edit' workout_set.id %}">
+                                                        編集
+                                                    </a>
+
+                                                    <a class="delete-link"
+                                                       href="{% url 'set_delete' workout_set.id %}">
+                                                        削除
+                                                    </a>
+
+                                                </span>
+
+                                            </div>
+
+                                        {% empty %}
+
+                                            <p class="empty-message">
+                                                まだセットがありません。
+                                            </p>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                </div>
 
                             {% empty %}
 
-                                <li>
-                                    まだセットがありません
-                                </li>
+                                <p class="empty-message">
+                                    まだ種目がありません。
+                                </p>
 
                             {% endfor %}
 
-                        </ul>
 
-                    </li>
+                            <a class="add-exercise-button"
+                               href="{% url 'exercise_create' workout.id %}">
+                                ＋ 種目を追加
+                            </a>
+
+                        </div>
+
+                    </div>
+
 
                 {% empty %}
 
-                    <li>
-                        まだ種目がありません
-                    </li>
+                    <div class="card">
+
+                        <p>
+                            まだトレーニング記録がありません。
+                        </p>
+
+                    </div>
 
                 {% endfor %}
 
-            </ul>
+            </section>
 
-            <a href="{% url 'exercise_create' workout.id %}">
-                種目を追加
+        </main>
+
+
+        <footer>
+
+            <a class="home-link" href="{% url 'home' %}">
+                ← ホームに戻る
             </a>
 
-        </div>
+            <a class="logout-link" href="{% url 'logout' %}">
+                ログアウト
+            </a>
 
-        <hr>
+        </footer>
 
-    {% empty %}
-
-        <p>
-            まだトレーニング記録がありません。
-        </p>
-
-    {% endfor %}
+    </div>
 
 </body>
 

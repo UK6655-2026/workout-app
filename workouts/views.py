@@ -1,16 +1,18 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from .forms import WorkoutForm, ExerciseForm, SetForm, GoalForm, WeightRecordForm
-from .models import Workout, Exercise, WorkoutSet, Goal
+from .models import Workout, Exercise, WorkoutSet, Goal, WeightRecord
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+import calendar
+from datetime import date
 
 
 # Create your views here.
 @login_required
 def workout_list(request):
 
-    workouts = Workout.objects.filter(user=request.user)
+    workouts = Workout.objects.filter(user=request.user).order_by("-workout_date")
 
     if request.method == "POST":
         workout_form = WorkoutForm(request.POST)
@@ -82,7 +84,7 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect("workout_list")
+            return redirect("home")
 
         else:
             return render(request, "workouts/login.html", {
@@ -224,8 +226,13 @@ def home(request):
         user=request.user
     ).first()
 
+    latest_weight = WeightRecord.objects.filter(
+        user=request.user
+    ).order_by("-date", "created_at").first()
+
     return render(request, "workouts/home.html", {
         "goal" : goal,
+        "latest_weight": latest_weight,
     })
 
 @login_required
@@ -239,6 +246,12 @@ def weight_create(request):
 
             weight_record = form.save(commit=False)
             weight_record.user = request.user
+
+            WeightRecord.objects.filter(
+                user=request.user,
+                date=weight_record.date
+            ).delete()
+
             weight_record.save()
 
             return redirect("home")
@@ -287,3 +300,176 @@ def goal_create(request):
             "goal": goal,
         }
     )
+
+@login_required
+def weight_list(request):
+
+    weights = WeightRecord.objects.filter(
+        user=request.user
+    ).order_by("date")
+
+    return render(request, "workouts/weight_list.html", {
+        "weights": weights,
+    })
+
+@login_required
+def weight_edit(request, weight_id):
+
+    weight = get_object_or_404(
+        WeightRecord,
+        id=weight_id,
+        user=request.user
+    )
+
+    if request.method == "POST":
+
+        form = WeightRecordForm(
+            request.POST,
+            instance=weight
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect("weight_list")
+
+    else:
+
+        form = WeightRecordForm(
+            instance=weight
+        )
+
+    return render(request, "workouts/weight_form.html", {
+        "form": form,
+        "weight": weight,
+    })
+
+@login_required
+def weight_delete(request, weight_id):
+
+    weight = get_object_or_404(
+        WeightRecord,
+        id=weight_id,
+        user=request.user
+    )
+
+    if request.method == "POST":
+
+        weight.delete()
+
+        return redirect("weight_list")
+
+    return render(request, "workouts/weight_confirm_delete.html", {
+        "weight": weight,
+    })
+
+@login_required
+def workout_calendar(request):
+
+    today = date.today()
+
+    year = today.year
+    month = today.month
+
+    cal = calendar.Calendar(firstweekday=6)
+
+    month_days = cal.monthdayscalendar(year, month)
+
+    workouts = Workout.objects.filter(
+        user=request.user,
+        workout_date__year=year,
+        workout_date__month=month
+    )
+
+    workout_dates = {
+        workout.workout_date.day
+        for workout in workouts
+    }
+
+    return render(request, "workouts/calendar.html", {
+        "year": year,
+        "month": month,
+        "month_days": month_days,
+        "workout_dates": workout_dates,
+    })
+
+@login_required
+def workout_day(request, year, month, day):
+
+    workout = get_object_or_404(
+        Workout,
+        user=request.user,
+        workout_date=date(year, month, day)
+    )
+
+    return render(request, "workouts/workout_day.html", {
+        "workout": workout,
+    })
+
+@login_required
+def statistics(request):
+
+    workouts = Workout.objects.filter(
+        user=request.user
+    ).order_by("-workout_date")
+
+    workout_count = workouts.count()
+
+    exercise_count = Exercise.objects.filter(
+        workout__user=request.user
+    ).count()
+
+    set_count = WorkoutSet.objects.filter(
+        exercise__workout__user=request.user
+    ).count()
+
+    weights = WeightRecord.objects.filter(
+        user=request.user
+    ).order_by("date")
+
+    exercises = Exercise.objects.filter(
+        workout__user=request.user
+    ).prefetch_related("sets", "workout")
+
+    exercise_data = {}
+
+    for exercise in exercises:
+
+        if exercise.name not in exercise_data:
+            exercise_data[exercise.name] = []
+
+        for workout_set in exercise.sets.all():
+
+            exercise_data[exercise.name].append({
+                "date": exercise.workout.workout_date.strftime("%Y-%m-%d"),
+                "weight": float(workout_set.weight),
+            })
+
+    for name in exercise_data:
+        exercise_data[name].sort(
+            key=lambda x: x["date"]
+        )
+
+    exercise_stats = []
+
+    for name, records in exercise_data.items():
+
+        max_weight = max(
+            [record["weight"] for record in records],
+            default=0
+        )
+
+        exercise_stats.append({
+            "name": name,
+            "max_weight": max_weight,
+            "records": records,
+        })
+
+    return render(request, "workouts/statistics.html", {
+        "workout_count": workout_count,
+        "exercise_count": exercise_count,
+        "set_count": set_count,
+        "weights": weights,
+        "exercise_stats": exercise_stats,
+    })

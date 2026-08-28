@@ -18,4 +18,10 @@ urlpatterns = [
     path("home/",views.home,name="home"),
     path("goal/",views.goal_create,name="goal_create"),
     path("weight/",views.weight_create,name="weight_create"),
+    path("weight/list/",views.weight_list,name="weight_list"),
+    path("weight/<int:weight_id>/edit/",views.weight_edit,name="weight_edit"),
+    path("weight/<int:weight_id>/delete/",views.weight_delete,name="weight_delete"),
+    path("calendar/",views.workout_calendar,name="workout_calendar"),
+    path("calendar/<int:year>/<int:month>/<int:day>/",views.workout_day,name="workout_day"),
+    path("statistics/",views.statistics,name="statistics"),
 ]

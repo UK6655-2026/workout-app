@@ -1,0 +1,520 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統計</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header class="header">
+
+            <h1>📊 統計</h1>
+
+            <p>
+                トレーニングの成果を確認しましょう
+            </p>
+
+        </header>
+
+
+        <main>
+
+            <!-- トレーニング概要 -->
+
+            <section>
+
+                <h2 class="section-title">
+                    トレーニング概要
+                </h2>
+
+                <div class="statistics-summary">
+
+                    <div class="stat-card">
+
+                        <span class="stat-icon">🏋️</span>
+
+                        <p class="stat-label">
+                            トレーニング回数
+                        </p>
+
+                        <p class="stat-value">
+                            {{ workout_count }}
+                            <span>回</span>
+                        </p>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-icon">💪</span>
+
+                        <p class="stat-label">
+                            種目数
+                        </p>
+
+                        <p class="stat-value">
+                            {{ exercise_count }}
+                            <span>種目</span>
+                        </p>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <span class="stat-icon">🔥</span>
+
+                        <p class="stat-label">
+                            セット数
+                        </p>
+
+                        <p class="stat-value">
+                            {{ set_count }}
+                            <span>セット</span>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- 体重推移 -->
+
+            <section class="card statistics-chart-card">
+
+                <h2>
+                    ⚖️ 体重推移
+                </h2>
+
+                {% if weights %}
+
+                    <div class="statistics-chart-container">
+
+                        <canvas id="weightChart"></canvas>
+
+                    </div>
+
+                {% else %}
+
+                    <p class="empty-message">
+                        まだ体重の記録がありません。
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- 種目別重量推移 -->
+
+            <section class="card statistics-chart-card">
+
+                <h2>
+                    🏋️ 種目別の重量推移
+                </h2>
+
+                {% if exercise_stats %}
+
+                    <div class="exercise-select-area">
+
+                        <label for="exerciseSelect">
+                            種目を選択
+                        </label>
+
+                        <select id="exerciseSelect">
+
+                            {% for exercise in exercise_stats %}
+
+                                <option value="{{ exercise.name }}">
+                                    {{ exercise.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="statistics-chart-container">
+
+                        <canvas id="exerciseChart"></canvas>
+
+                    </div>
+
+                {% else %}
+
+                    <p class="empty-message">
+                        まだ種目の記録がありません。
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- 種目別最高重量 -->
+
+            <section>
+
+                <h2 class="section-title">
+                    🏆 種目別の最高重量
+                </h2>
+
+
+                {% if exercise_stats %}
+
+                    <div class="best-weight-list">
+
+                        {% for exercise in exercise_stats %}
+
+                            <div class="best-weight-card">
+
+                                <div>
+
+                                    <p class="best-weight-exercise">
+                                        {{ exercise.name }}
+                                    </p>
+
+                                    <p class="best-weight-label">
+                                        最高重量
+                                    </p>
+
+                                </div>
+
+                                <p class="best-weight-value">
+                                    {{ exercise.max_weight }}
+                                    <span>kg</span>
+                                </p>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="card">
+
+                        <p class="empty-message">
+                            まだ種目の記録がありません。
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- 関連ページ -->
+
+            <section class="statistics-links">
+
+                <a class="secondary-button"
+                   href="{% url 'weight_list' %}">
+                    ⚖️ 体重履歴を見る
+                </a>
+
+                <a class="secondary-button"
+                   href="{% url 'workout_calendar' %}">
+                    📅 トレーニングカレンダー
+                </a>
+
+            </section>
+
+        </main>
+
+
+        <footer>
+
+            <a class="home-link" href="{% url 'home' %}">
+                ← ホームに戻る
+            </a>
+
+        </footer>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <!-- 体重グラフ -->
+
+    <script>
+
+        const weightData = [
+
+            {% for weight in weights %}
+
+                {
+                    date: "{{ weight.date }}",
+                    weight: {{ weight.weight }}
+                },
+
+            {% endfor %}
+
+        ];
+
+
+        const weightLabels = weightData.map(
+            item => item.date
+        );
+
+
+        const weightValues = weightData.map(
+            item => item.weight
+        );
+
+
+        const weightCtx = document.getElementById(
+            "weightChart"
+        );
+
+
+        if (weightCtx) {
+
+            new Chart(weightCtx, {
+
+                type: "line",
+
+                data: {
+
+                    labels: weightLabels,
+
+                    datasets: [{
+
+                        label: "体重 (kg)",
+
+                        data: weightValues,
+
+                        borderWidth: 2,
+
+                        tension: 0.3,
+
+                        pointRadius: 4,
+
+                        pointHoverRadius: 6
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            title: {
+
+                                display: true,
+
+                                text: "体重 (kg)"
+
+                            }
+
+                        },
+
+                        x: {
+
+                            title: {
+
+                                display: true,
+
+                                text: "日付"
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+
+    <!-- 種目別グラフ -->
+
+    <script>
+
+        const exerciseData = {
+
+            {% for exercise in exercise_stats %}
+
+                "{{ exercise.name|escapejs }}": {
+
+                    labels: [
+
+                        {% for record in exercise.records %}
+
+                            "{{ record.date }}",
+
+                        {% endfor %}
+
+                    ],
+
+                    weights: [
+
+                        {% for record in exercise.records %}
+
+                            {{ record.weight }},
+
+                        {% endfor %}
+
+                    ]
+
+                },
+
+            {% endfor %}
+
+        };
+
+
+        const exerciseSelect = document.getElementById(
+            "exerciseSelect"
+        );
+
+
+        const exerciseCtx = document.getElementById(
+            "exerciseChart"
+        );
+
+
+        let exerciseChart = null;
+
+
+        function createExerciseChart(exerciseName) {
+
+            const selectedExercise =
+                exerciseData[exerciseName];
+
+
+            if (!selectedExercise || !exerciseCtx) {
+                return;
+            }
+
+
+            if (exerciseChart) {
+                exerciseChart.destroy();
+            }
+
+
+            exerciseChart = new Chart(
+                exerciseCtx,
+                {
+
+                    type: "line",
+
+                    data: {
+
+                        labels: selectedExercise.labels,
+
+                        datasets: [{
+
+                            label: exerciseName + " (kg)",
+
+                            data: selectedExercise.weights,
+
+                            borderWidth: 2,
+
+                            tension: 0.3,
+
+                            pointRadius: 4,
+
+                            pointHoverRadius: 6
+
+                        }]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        scales: {
+
+                            y: {
+
+                                title: {
+
+                                    display: true,
+
+                                    text: "重量 (kg)"
+
+                                }
+
+                            },
+
+                            x: {
+
+                                title: {
+
+                                    display: true,
+
+                                    text: "日付"
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        if (exerciseSelect) {
+
+            createExerciseChart(
+                exerciseSelect.value
+            );
+
+
+            exerciseSelect.addEventListener(
+                "change",
+                function () {
+
+                    createExerciseChart(
+                        this.value
+                    );
+
+                }
+            );
+
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>トレーニング詳細</title>
+</head>
+
+<body>
+
+    <h1>トレーニング詳細</h1>
+
+    <h2>
+        {{ workout.workout_date }}
+    </h2>
+
+    {% if workout.memo %}
+
+        <p>
+            メモ：{{ workout.memo }}
+        </p>
+
+    {% endif %}
+
+    <hr>
+
+    <h2>種目</h2>
+
+    {% for exercise in workout.exercises.all %}
+
+        <h3>
+            {{ exercise.name }}
+        </h3>
+
+        <ul>
+
+            {% for workout_set in exercise.sets.all %}
+
+                <li>
+                    {{ workout_set.weight }} kg
+                    ×
+                    {{ workout_set.reps }}回
+                </li>
+
+            {% empty %}
+
+                <li>
+                    まだセットがありません。
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    {% empty %}
+
+        <p>
+            まだ種目が登録されていません。
+        </p>
+
+    {% endfor %}
+
+    <hr>
+
+    <a href="{% url 'workout_calendar' %}">
+        カレンダーに戻る
+    </a>
+
+    <br>
+
+    <a href="{% url 'home' %}">
+        ホームに戻る
+    </a>
+
+</body>
+
+</html>

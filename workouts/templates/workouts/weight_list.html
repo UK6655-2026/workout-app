@@ -1,0 +1,258 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>体重履歴</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header class="header">
+
+            <h1>⚖️ 体重履歴</h1>
+
+            <p>
+                これまでの体重の変化を確認できます
+            </p>
+
+        </header>
+
+
+        <main>
+
+            <!-- 体重記録ボタン -->
+
+            <div class="page-actions">
+
+                <a class="primary-button"
+                   href="{% url 'weight_create' %}">
+                    ＋ 体重を記録する
+                </a>
+
+            </div>
+
+
+            <!-- グラフ -->
+
+            <section class="card weight-chart-card">
+
+                <h2>
+                    体重の推移
+                </h2>
+
+                {% if weights %}
+
+                    <div class="chart-container">
+
+                        <canvas id="weightChart"></canvas>
+
+                    </div>
+
+                {% else %}
+
+                    <p class="empty-message">
+                        グラフを表示するには体重を記録してください。
+                    </p>
+
+                {% endif %}
+
+            </section>
+
+
+            <!-- 履歴 -->
+
+            <section>
+
+                <h2 class="section-title">
+                    記録履歴
+                </h2>
+
+
+                {% for weight in weights %}
+
+                    <div class="weight-history-card">
+
+                        <div class="weight-info">
+
+                            <p class="weight-date">
+                                {{ weight.date }}
+                            </p>
+
+                            <p class="weight-value">
+                                {{ weight.weight }} <span>kg</span>
+                            </p>
+
+                        </div>
+
+
+                        <div class="weight-actions">
+
+                            <a class="small-button"
+                               href="{% url 'weight_edit' weight.id %}">
+                                編集
+                            </a>
+
+                            <a class="small-button delete-button"
+                               href="{% url 'weight_delete' weight.id %}">
+                                削除
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                {% empty %}
+
+                    <div class="card">
+
+                        <p class="empty-message">
+                            まだ体重の記録がありません。
+                        </p>
+
+                    </div>
+
+                {% endfor %}
+
+            </section>
+
+        </main>
+
+
+        <footer>
+
+            <a class="home-link" href="{% url 'home' %}">
+                ← ホームに戻る
+            </a>
+
+        </footer>
+
+    </div>
+
+
+    <!-- Chart.js -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        const weightData = [
+
+            {% for weight in weights %}
+
+                {
+                    date: "{{ weight.date }}",
+                    weight: {{ weight.weight }}
+                },
+
+            {% endfor %}
+
+        ];
+
+
+        const labels = weightData.map(
+            item => item.date
+        );
+
+
+        const data = weightData.map(
+            item => item.weight
+        );
+
+
+        const ctx = document.getElementById(
+            "weightChart"
+        );
+
+
+        if (ctx) {
+
+            new Chart(ctx, {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [{
+
+                        label: "体重 (kg)",
+
+                        data: data,
+
+                        borderWidth: 2,
+
+                        tension: 0.3,
+
+                        pointRadius: 4,
+
+                        pointHoverRadius: 6
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            title: {
+
+                                display: true,
+
+                                text: "体重 (kg)"
+
+                            }
+
+                        },
+
+                        x: {
+
+                            title: {
+
+                                display: true,
+
+                                text: "日付"
+
+                            }
+
+                        }
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+
+                            display: true
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

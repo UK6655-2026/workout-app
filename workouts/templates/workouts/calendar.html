@@ -1,0 +1,130 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>トレーニングカレンダー</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header class="header">
+
+            <h1>📅 トレーニングカレンダー</h1>
+
+            <p>
+                トレーニングした日を確認できます
+            </p>
+
+        </header>
+
+
+        <main>
+
+            <section class="calendar-card">
+
+                <h2>
+                    {{ year }}年 {{ month }}月
+                </h2>
+
+
+                <div class="calendar-wrapper">
+
+                    <table class="training-calendar">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>日</th>
+                                <th>月</th>
+                                <th>火</th>
+                                <th>水</th>
+                                <th>木</th>
+                                <th>金</th>
+                                <th>土</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for week in month_days %}
+
+                                <tr>
+
+                                    {% for day in week %}
+
+                                        <td>
+
+                                            {% if day != 0 %}
+
+                                                <div class="calendar-day">
+
+                                                    <span class="day-number">
+                                                        {{ day }}
+                                                    </span>
+
+
+                                                    {% if day in workout_dates %}
+
+                                                        <a class="training-day"
+                                                           href="{% url 'workout_day' year month day %}">
+
+                                                            ● トレーニング
+
+                                                        </a>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                    {% endfor %}
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <div class="calendar-actions">
+
+                <a class="secondary-button"
+                   href="{% url 'workout_list' %}">
+                    トレーニング履歴を見る
+                </a>
+
+                <a class="home-link"
+                   href="{% url 'home' %}">
+                    ← ホームに戻る
+                </a>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>

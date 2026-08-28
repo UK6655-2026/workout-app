@@ -1,32 +1,65 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>体重記録</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
 
-    <h1>体重記録</h1>
+    <div class="container">
 
-    <form method="POST">
+        <header class="header">
 
-        {% csrf_token %}
+            <h1>⚖️ 体重記録</h1>
 
-        {{ form.as_p }}
+            <p>
+                今日の体重を記録しましょう
+            </p>
 
-        <button type="submit">
-            保存する
-        </button>
+        </header>
 
-    </form>
 
-    <br>
+        <main>
 
-    <a href="{% url 'home' %}">
-        ホームに戻る
-    </a>
+            <section class="card weight-form-card">
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+
+                    <button type="submit" class="primary-button">
+                        保存する
+                    </button>
+
+                </form>
+
+            </section>
+
+        </main>
+
+
+        <footer>
+
+            <a class="home-link" href="{% url 'home' %}">
+                ← ホームに戻る
+            </a>
+
+            <a class="home-link" href="{% url 'weight_list' %}">
+                体重履歴を見る
+            </a>
+
+        </footer>
+
+    </div>
 
 </body>
 
