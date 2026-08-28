@@ -570,6 +570,19 @@ User
 *ログイン機能の自動テストを実装
 *未ログイン時のアクセス制御をテスト
 *ホーム画面へのログイン後アクセスをテスト
+* RenderとGitHubを連携
+* Render Web Serviceを作成
+* Renderへのデプロイ環境を構築
+* requirements.txtを作成
+* build.shを作成
+* collectstatic・migrateを本番環境で実行
+* GunicornによるDjangoアプリの起動を確認
+* Render上でWebアプリを公開
+* 本番環境でログイン画面・ユーザー登録を確認
+* PCから本番環境へのアクセスを確認
+* スマートフォンから本番環境へのアクセスを確認
+* スマートフォンからユーザー登録・編集操作を確認
+* Django自動テスト3件がすべて成功することを確認
 
 ---
 
@@ -579,6 +592,67 @@ User
 
 特に、
 
-**テスト → エラー処理 → UI/UX改善 → デプロイ**
+**テスト → エラー処理 → UI/UX改善 → 本番環境の改善**
 
 の順番で改善し、最終的にはスマートフォンからインターネット経由で利用できるWebアプリとして公開することを目指します。
+
+---
+
+# 開発・実行方法
+
+## 仮想環境の有効化
+
+プロジェクトディレクトリで以下を実行します。
+
+```bash
+source .venv/bin/activate
+```
+
+仮想環境が有効になると、ターミナルの先頭に以下のように表示されます。
+
+```text
+(.venv)
+```
+
+## Django開発サーバーの起動
+
+```bash
+python manage.py runserver
+```
+
+ブラウザから以下にアクセスします。
+
+```text
+http://127.0.0.1:8000/workouts/
+```
+
+## 自動テスト
+
+```bash
+python manage.py test
+```
+
+---
+
+# 公開環境
+
+Renderを使用してWebアプリを公開しています。
+
+公開URL：
+
+https://workout-app-pmou.onrender.com/workouts/
+
+PC・スマートフォンのブラウザからアクセスできます。
+
+---
+
+# 現在の開発環境
+
+Python 3.10
+Django 5.2.17
+SQLite
+Gunicorn
+WhiteNoise
+Render
+Git / GitHub
+
