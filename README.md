@@ -628,9 +628,7 @@ http://127.0.0.1:8000/workouts/
 
 ## 自動テスト
 
-```bash
 python manage.py test
-```
 
 ---
 
