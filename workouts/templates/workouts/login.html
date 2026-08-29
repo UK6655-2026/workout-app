@@ -3,36 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>ログイン</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
+
 <body>
 
-    <h1>ログイン</h1>
+    <div class="container">
 
-    {% if error %}
-        <p>{{ error }}</p>
-    {% endif %}
+        <div class="card login-card">
 
-    <form method="POST">
-        {% csrf_token %}
+            <h1>ログイン</h1>
 
-        <p>
-            <label>ユーザー名</label>
-            <input type="text" name="username">
-        </p>
+            {% if error %}
+                <p>{{ error }}</p>
+            {% endif %}
 
-        <p>
-            <label>パスワード</label>
-            <input type="password" name="password">
-        </p>
+            <form method="POST">
+                {% csrf_token %}
 
-        <button type="submit">ログイン</button>
-    </form>
+                <p>
+                    <label>ユーザー名</label>
+                    <input type="text" name="username">
+                </p>
 
-    <p>
-        <a href="{% url 'register' %}">
-            新規登録はこちら
-        </a>
-    </p>
+                <p>
+                    <label>パスワード</label>
+                    <input type="password" name="password">
+                </p>
+
+                <button type="submit" class="primary-button">
+                    ログイン
+                </button>
+            </form>
+
+            <p>
+                <a href="{% url 'register' %}">
+                    新規登録はこちら
+                </a>
+            </p>
+
+        </div>
+
+    </div>
 
 </body>
 </html>

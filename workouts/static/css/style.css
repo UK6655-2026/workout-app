@@ -887,3 +887,42 @@ footer {
     }
 
 }
+
+/* ========================================
+   ログイン画面
+======================================== */
+
+.login-card {
+    max-width: 500px;
+    margin: 80px auto 0;
+}
+
+.login-card h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-card label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.login-card .primary-button {
+    border: none;
+    cursor: pointer;
+}
+
+.login-card a {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+}
