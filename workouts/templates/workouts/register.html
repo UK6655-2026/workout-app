@@ -3,22 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>新規登録</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
-    <h1>新規登録</h1>
+    <div class="container">
 
-    <form method="POST">
-        {% csrf_token %}
+        <div class="card login-card">
 
-        {{ form.as_p }}
+            <h1>新規登録</h1>
 
-        <button type="submit">登録</button>
-    </form>
+            <form method="POST">
+                {% csrf_token %}
 
-    <a href="{% url 'login' %}">
-        ログイン画面へ
-    </a>
+                {{ form.as_p }}
+
+                <button type="submit" class="primary-button">
+                    登録
+                </button>
+            </form>
+
+            <p>
+                <a href="{% url 'login' %}">
+                    ログイン画面へ
+                </a>
+            </p>
+
+        </div>
+
+    </div>
 
 </body>
 </html>
