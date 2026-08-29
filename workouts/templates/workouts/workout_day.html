@@ -1,76 +1,96 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
     <title>トレーニング詳細</title>
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 </head>
 
 <body>
 
-    <h1>トレーニング詳細</h1>
+<div class="container">
 
-    <h2>
-        {{ workout.workout_date }}
-    </h2>
+    <div class="header">
+        <h1>トレーニング詳細</h1>
+        <p>{{ workout.workout_date }}</p>
+    </div>
 
-    {% if workout.memo %}
+    <div class="workout-card">
 
-        <p>
-            メモ：{{ workout.memo }}
-        </p>
+        {% if workout.memo %}
+            <div class="memo">
+                メモ：{{ workout.memo }}
+            </div>
+        {% endif %}
 
-    {% endif %}
+        <div class="exercise-section">
 
-    <hr>
+            <h2>種目</h2>
 
-    <h2>種目</h2>
+            {% for exercise in workout.exercises.all %}
 
-    {% for exercise in workout.exercises.all %}
+                <div class="exercise-card">
 
-        <h3>
-            {{ exercise.name }}
-        </h3>
+                    <div class="exercise-header">
+                        <strong>{{ exercise.name }}</strong>
+                    </div>
 
-        <ul>
+                    <div class="set-list">
 
-            {% for workout_set in exercise.sets.all %}
+                        {% for workout_set in exercise.sets.all %}
 
-                <li>
-                    {{ workout_set.weight }} kg
-                    ×
-                    {{ workout_set.reps }}回
-                </li>
+                            <div class="set-row">
+                                <span>
+                                    {{ workout_set.weight }} kg
+                                    ×
+                                    {{ workout_set.reps }}回
+                                </span>
+                            </div>
+
+                        {% empty %}
+
+                            <div class="set-row">
+                                <span class="empty-message">
+                                    まだセットがありません。
+                                </span>
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
 
             {% empty %}
 
-                <li>
-                    まだセットがありません。
-                </li>
+                <p class="empty-message">
+                    まだ種目が登録されていません。
+                </p>
 
             {% endfor %}
 
-        </ul>
+        </div>
 
-    {% empty %}
+    </div>
 
-        <p>
-            まだ種目が登録されていません。
-        </p>
+    <div class="calendar-actions">
 
-    {% endfor %}
+        <a href="{% url 'workout_calendar' %}" class="secondary-button">
+            カレンダーに戻る
+        </a>
 
-    <hr>
+        <a href="{% url 'home' %}" class="secondary-button">
+            ホームに戻る
+        </a>
 
-    <a href="{% url 'workout_calendar' %}">
-        カレンダーに戻る
-    </a>
+    </div>
 
-    <br>
-
-    <a href="{% url 'home' %}">
-        ホームに戻る
-    </a>
+</div>
 
 </body>
 
