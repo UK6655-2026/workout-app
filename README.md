@@ -30,7 +30,7 @@
 * UI・UX改善
 * テスト
 * デバッグ
-* デプロイ
+* 本番環境へのデプロイ
 
 ---
 
@@ -77,13 +77,11 @@
 
 例えば、
 
-```text
 ベンチプレス
 
 1セット目：60kg × 10回
 2セット目：60kg × 8回
 3セット目：55kg × 8回
-```
 
 のように記録できます。
 
@@ -152,7 +150,6 @@
 
 # 画面構成
 
-```text
 ログイン画面
     │
     ├── ユーザー登録
@@ -171,7 +168,6 @@
     ├── 統計・グラフ
     │
     └── トレーニングカレンダー
-```
 
 ---
 
@@ -205,13 +201,11 @@
 
 トレーニングの記録を登録できます。
 
-```text
 Workout
    ↓
 Exercise
    ↓
 WorkoutSet
-```
 
 という構造で、1回のトレーニングに複数の種目を登録し、各種目に複数のセットを登録できます。
 
@@ -268,7 +262,6 @@ WorkoutSet
 
 現在、以下のモデル構成で設計・実装しています。
 
-```text
 User
 │
 ├── Goal
@@ -280,7 +273,6 @@ User
 │       └── WorkoutSet
 │
 └── WeightRecord
-```
 
 ## User
 
@@ -352,7 +344,6 @@ WorkoutはUserに紐づいています。
 
 各モデルをリレーションで関連付けています。
 
-```text
 User
  │
  ├── 1 : N ── Goal
@@ -364,7 +355,6 @@ User
  │                              └── 1 : N ── WorkoutSet
  │
  └── 1 : N ── WeightRecord
-```
 
 トレーニングについては、
 
@@ -408,22 +398,39 @@ User
 * Python
 * Django
 * SQLite
+* PostgreSQL
 * HTML
 * CSS
 * JavaScript
 * Chart.js
 * Git
 * GitHub
+* Gunicorn
+* WhiteNoise
+* Render
 
 ---
 
 # 開発環境
 
+## ローカル環境
+
 * macOS
 * Python 3.10
-* Django 5.2
+* Django 5.2.17
 * SQLite
 * VS Code
+
+## 本番環境
+
+* Render
+* Python 3.14.3
+* Django 5.2.17
+* PostgreSQL
+* Gunicorn
+* WhiteNoise
+
+ローカル環境ではSQLiteを使用し、本番環境ではPostgreSQLを使用しています。
 
 ---
 
@@ -482,18 +489,46 @@ User
 * GitHubへのバージョン管理
 * 自動テストの実装
 * ログイン・認証の自動テスト
+* Goal機能の自動テスト
+* 統計機能の自動テスト
+* カレンダー機能の自動テスト
+* ユーザーごとのデータ分離テスト
+* 体重機能の編集・削除・ユーザー分離テスト
+* 統計機能の集計結果テスト
+* 種目別最高重量の計算テスト
+* カレンダーの日付表示テスト
+* 合計31個の自動テスト
+* 31個のテストがすべて成功
+* RenderとGitHubの連携
+* Render Web Serviceの構築
+* 本番環境のデプロイ設定
+* requirements.txtの作成
+* build.shの作成
+* collectstatic・migrateの本番環境実行
+* GunicornによるDjangoアプリの起動
+* Render上でのWebアプリ公開
+* PostgreSQL対応
+* 本番環境でのマイグレーション成功
+* 本番環境でのログイン・ユーザー登録確認
+* PCから本番環境へのアクセス確認
+* スマートフォンから本番環境へのアクセス確認
+* スマートフォンからユーザー登録・編集操作を確認
+* 本番環境でのトレーニング記録確認
+* トレーニング日付入力の改善
+* 体重日付入力の改善
 
 ---
 
 # 今後実装予定
 
-* バリデーションの改善
+基本的な機能の実装と本番環境への公開が完了したため、今後は品質向上を中心に改善を行います。
+
+* バリデーションのさらなる改善
 * エラーハンドリングの改善
 * UI・UXのさらなる改善
 * 統計機能の拡張
 * スマートフォンでの操作性のさらなる改善
-*PostgreSQLへの移行
-*本番環境のデータベース改善
+* 本番環境の安定性・運用面の改善
 
 ---
 
@@ -563,10 +598,10 @@ User
 * ホーム画面を起点とした画面遷移を整理
 * PC・スマートフォン向けのUI改善
 * GitHubへ完成時点のコードを保存
-*Djangoの自動テストを導入
-*ログイン機能の自動テストを実装
-*未ログイン時のアクセス制御をテスト
-*ホーム画面へのログイン後アクセスをテスト
+* Djangoの自動テストを導入
+* ログイン機能の自動テストを実装
+* 未ログイン時のアクセス制御をテスト
+* ホーム画面へのログイン後アクセスをテスト
 * RenderとGitHubを連携
 * Render Web Serviceを作成
 * Renderへのデプロイ環境を構築
@@ -581,7 +616,7 @@ User
 * スマートフォンからユーザー登録・編集操作を確認
 * Django自動テスト3件がすべて成功することを確認
 
-## 2026/8/29
+## 2026/08/29
 
 * Django自動テストを拡充
 * Goal機能の自動テストを実装
@@ -596,23 +631,48 @@ User
 * 合計31個の自動テストを実装
 * 31個のテストがすべて成功
 
+## 2026/08/30
+
+* 本番環境のデータベースをPostgreSQLに対応
+* PostgreSQL用ドライバ（psycopg）をrequirements.txtへ追加
+* Render上でPostgreSQL接続を確認
+* 本番環境でマイグレーション成功を確認
+* RenderのBuild成功を確認
+* Gunicornによる本番環境での起動を確認
+* Render上でWebアプリが正常に稼働することを確認
+* 本番環境でトレーニング記録の登録を確認
+* トレーニング日付入力の改善
+* 体重日付入力の改善
+* GitHubとRenderの自動デプロイを確認
+* READMEの開発・実行方法を整理
+* ローカル環境と本番環境の構成をREADMEに反映
+
 ---
 
 # 今後の方針
 
-必要な基本機能の実装が完了したため、今後は品質向上を中心に開発を進めます。
+必要な基本機能の実装と本番環境への公開が完了したため、今後は品質向上を中心に開発を進めます。
 
 特に、
 
 **テスト → エラー処理 → UI/UX改善 → 本番環境の改善**
 
-の順番で改善し、今後はスマートフォンでの操作性や本番環境の品質をさらに改善し、より安定して利用できるWebアプリを目指します。
+の順番で改善し、スマートフォンでの操作性や本番環境の品質をさらに高め、安定して利用できるWebアプリを目指します。
 
 ---
 
 # 開発・実行方法
 
-## 仮想環境の有効化
+## 1. リポジトリを取得
+
+GitHubからリポジトリを取得します。
+
+git clone git@github.com:UK6655-2026/workout-app.git
+cd workout-app
+
+---
+
+## 2. 仮想環境の有効化
 
 プロジェクトディレクトリで以下を実行します。
 
@@ -622,7 +682,23 @@ source .venv/bin/activate
 
 (.venv)
 
-## Django開発サーバーの起動
+---
+
+## 3. 依存パッケージのインストール
+
+必要なパッケージをインストールします。
+
+pip install -r requirements.txt
+
+---
+
+## 4. データベースのマイグレーション
+
+python manage.py migrate
+
+---
+
+## 5. Django開発サーバーの起動
 
 python manage.py runserver
 
@@ -630,9 +706,26 @@ python manage.py runserver
 
 http://127.0.0.1:8000/workouts/
 
-## 自動テスト
+---
+
+## 6. 自動テスト
+
+以下のコマンドでDjangoの自動テストを実行できます。
 
 python manage.py test
+
+---
+
+# GitHubへの変更反映
+
+ローカルで変更した場合は、以下の流れでGitHubへ反映します。
+
+git status
+git add .
+git commit -m "変更内容"
+git push origin main
+
+GitHubの`main`ブランチへpushすると、RenderのAuto-Deployによって本番環境へ自動的にデプロイされます。
 
 ---
 
@@ -646,15 +739,65 @@ https://workout-app-pmou.onrender.com/workouts/
 
 PC・スマートフォンのブラウザからアクセスできます。
 
+本番環境ではPostgreSQLを使用しています。
+
 ---
 
-# 現在の開発環境
+# 本番環境へのデプロイ
 
+GitHubの`main`ブランチとRenderを連携しています。
+
+GitHubへpushすると、Renderが変更を検知し、自動的にBuild・Deployを実行します。
+
+本番環境では以下を使用しています。
+
+* Render
+* PostgreSQL
+* Gunicorn
+* WhiteNoise
+
+Build時には以下の処理を実行します。
+
+pip install -r requirements.txt
+python manage.py collectstatic --no-input
+python manage.py migrate
+
+WebサービスはGunicornを使用して起動します。
+
+gunicorn config.wsgi:application
+
+---
+
+# 開発環境と本番環境
+
+【ローカル開発】
+
+macOS
+  ↓
 Python 3.10
-Django 5.2.17
+  ↓
+Django
+  ↓
 SQLite
-Gunicorn
-WhiteNoise
-Render
-Git / GitHub
+  ↓
+Git
+  ↓
+GitHub
 
+          ↓ push
+
+【本番環境】
+
+GitHub
+  ↓
+Render
+  ↓
+Django
+  ↓
+Gunicorn
+  ↓
+PostgreSQL
+  ↓
+Webブラウザ
+
+ローカル環境ではSQLiteを使用して開発・テストを行い、本番環境ではPostgreSQLを使用しています。
