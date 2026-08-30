@@ -4,6 +4,14 @@ from .models import Workout, Exercise, WorkoutSet, Goal, WeightRecord
 
 
 class WorkoutForm(forms.ModelForm):
+    workout_date = forms.DateField(
+        input_formats=[
+            "%Y-%m-%d",
+            "%Y/%m/%d",
+            "%Y.%m.%d",
+        ]
+    )
+
     class Meta:
         model = Workout
         fields = [
@@ -42,10 +50,16 @@ class GoalForm(forms.ModelForm):
         }
 
 class WeightRecordForm(forms.ModelForm):
+    date = forms.DateField(
+        input_formats=[
+            "%Y-%m-%d",
+            "%Y/%m/%d",
+            "%Y.%m.%d",
+        ]
+    )
 
     class Meta:
         model = WeightRecord
-
         fields = [
             "date",
             "weight",
