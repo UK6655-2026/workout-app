@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>トレーニングカレンダー</title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -30,9 +31,31 @@
 
             <section class="calendar-card">
 
-                <h2>
-                    {{ year }}年 {{ month }}月
-                </h2>
+                <div class="calendar-navigation">
+
+                    <h2>
+                        {{ year }}年 {{ month }}月
+                    </h2>
+
+                    <div class="calendar-month-buttons">
+
+                        <a
+                            class="secondary-button"
+                            href="?year={{ previous_year }}&month={{ previous_month }}"
+                        >
+                            ← 前月
+                        </a>
+
+                        <a
+                            class="secondary-button"
+                            href="?year={{ next_year }}&month={{ next_month }}"
+                        >
+                            次月 →
+                        </a>
+
+                    </div>
+
+                </div>
 
 
                 <div class="calendar-wrapper">
@@ -77,11 +100,11 @@
 
                                                     {% if day in workout_dates %}
 
-                                                        <a class="training-day"
-                                                           href="{% url 'workout_day' year month day %}">
-
+                                                        <a
+                                                            class="training-day"
+                                                            href="{% url 'workout_day' year month day %}"
+                                                        >
                                                             ● トレーニング
-
                                                         </a>
 
                                                     {% endif %}
@@ -109,13 +132,18 @@
 
             <div class="calendar-actions">
 
-                <a class="secondary-button"
-                   href="{% url 'workout_list' %}">
+                <a
+                    class="secondary-button"
+                    href="{% url 'workout_list' %}"
+                >
                     トレーニング履歴を見る
                 </a>
 
-                <a class="home-link"
-                   href="{% url 'home' %}">
+
+                <a
+                    class="home-link"
+                    href="{% url 'home' %}"
+                >
                     ← ホームに戻る
                 </a>
 

@@ -1,34 +1,73 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
+
     <title>種目を追加</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
+
 <body>
 
-    <h1>種目を追加</h1>
+    <div class="container">
 
-    <p>
-        {{ workout.workout_date }} のトレーニング
-    </p>
+        <header class="header">
 
-    <form method="POST">
-        {% csrf_token %}
+            <h1>筋トレ管理アプリ</h1>
 
-        {{ form.as_p }}
+            <p>
+                種目を追加
+            </p>
 
-        <button type="submit">種目を追加</button>
-    </form>
+        </header>
 
-    <a href="{% url 'workout_list' %}">
-        トレーニング一覧に戻る
-    </a>
 
-    <br>
+        <main>
 
-    <a href="{% url 'home' %}">
-        ホームに戻る
-    </a>
-    
+            <div class="card goal-form-card">
+
+                <h2>種目を追加</h2>
+
+                <p>
+                    {{ workout.workout_date }} のトレーニング
+                </p>
+
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+
+                    <button type="submit" class="button primary-button">
+                        種目を追加
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <footer>
+
+                <a class="text-link" href="{% url 'workout_list' %}">
+                    トレーニング一覧に戻る
+                </a>
+
+                <a class="text-link" href="{% url 'home' %}">
+                    ホームに戻る
+                </a>
+
+            </footer>
+
+        </main>
+
+    </div>
+
 </body>
+
 </html>

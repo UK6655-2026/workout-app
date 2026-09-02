@@ -369,8 +369,31 @@ def workout_calendar(request):
 
     today = date.today()
 
-    year = today.year
-    month = today.month
+    year_param = request.GET.get("year")
+    month_param = request.GET.get("month")
+
+    if year_param and month_param:
+        year = int(year_param)
+        month = int(month_param)
+    else:
+        year = today.year
+        month = today.month
+
+    # 前月
+    if month == 1:
+        previous_year = year - 1
+        previous_month = 12
+    else:
+        previous_year = year
+        previous_month = month - 1
+
+    # 次月
+    if month == 12:
+        next_year = year + 1
+        next_month = 1
+    else:
+        next_year = year
+        next_month = month + 1
 
     cal = calendar.Calendar(firstweekday=6)
 
@@ -392,6 +415,10 @@ def workout_calendar(request):
         "month": month,
         "month_days": month_days,
         "workout_dates": workout_dates,
+        "previous_year": previous_year,
+        "previous_month": previous_month,
+        "next_year": next_year,
+        "next_month": next_month,
     })
 
 @login_required

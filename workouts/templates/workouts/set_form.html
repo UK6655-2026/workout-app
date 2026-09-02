@@ -1,8 +1,11 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
     <meta charset="UTF-8">
+
     <title>
         {% if workout_set %}
             セットを編集
@@ -10,60 +13,89 @@
             セットを追加
         {% endif %}
     </title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
 
-    {% if workout_set %}
+    <div class="container">
 
-        <h1>セットを編集</h1>
+        <header class="header">
 
-        <p>
-            種目：{{ workout_set.exercise.name }}
-        </p>
+            <h1>筋トレ管理アプリ</h1>
 
-    {% else %}
+            <p>
+                {% if workout_set %}
+                    セットを編集
+                {% else %}
+                    セットを追加
+                {% endif %}
+            </p>
 
-        <h1>セットを追加</h1>
-
-        <p>
-            種目：{{ exercise.name }}
-        </p>
-
-    {% endif %}
+        </header>
 
 
-    <form method="POST">
+        <main>
 
-        {% csrf_token %}
+            <div class="card goal-form-card">
 
-        {{ form.as_p }}
+                {% if workout_set %}
 
-        <button type="submit">
+                    <h2>セットを編集</h2>
 
-            {% if workout_set %}
-                保存する
-            {% else %}
-                セットを追加
-            {% endif %}
+                    <p>
+                        種目：{{ workout_set.exercise.name }}
+                    </p>
 
-        </button>
+                {% else %}
 
-    </form>
+                    <h2>セットを追加</h2>
+
+                    <p>
+                        種目：{{ exercise.name }}
+                    </p>
+
+                {% endif %}
 
 
-    <br>
+                <form method="POST">
 
-    <a href="{% url 'workout_list' %}">
-        トレーニング一覧に戻る
-    </a>
+                    {% csrf_token %}
 
-    <br>
+                    {{ form.as_p }}
 
-    <a href="{% url 'home' %}">
-        ホームに戻る
-    </a>
-    
+                    <button type="submit" class="button primary-button">
+
+                        {% if workout_set %}
+                            保存する
+                        {% else %}
+                            セットを追加
+                        {% endif %}
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <footer>
+
+                <a class="text-link" href="{% url 'workout_list' %}">
+                    トレーニング一覧に戻る
+                </a>
+
+                <a class="text-link" href="{% url 'home' %}">
+                    ホームに戻る
+                </a>
+
+            </footer>
+
+        </main>
+
+    </div>
+
 </body>
 
 </html>
